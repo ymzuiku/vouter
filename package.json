@@ -1,6 +1,6 @@
 {
   "name": "vouter",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "main": "umd/index.js",
   "types": "lib/index.ts",
   "exports": {
