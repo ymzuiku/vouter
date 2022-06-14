@@ -38,7 +38,7 @@ const replace = (url: string) => {
     url = "/#" + url;
   }
   history.replaceState(null, "", url);
-  window.dispatchEvent(new Event("pushState"));
+  window.dispatchEvent(new Event("replaceState"));
 };
 
 const goBack = () => {

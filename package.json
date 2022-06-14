@@ -35,6 +35,7 @@
   },
   "homepage": "git+https://github.com/ymzuiku/vouter.git",
   "dependencies": {
-    "react-ob": "^2.2.5"
+    "react-ob": "^2.2.5",
+    "react-override-props": "^0.0.2"
   }
 }

@@ -8,20 +8,19 @@ export interface RoutesCreatorOptions {
 
 export const creator: <T extends Record<string, Route>>(
   routes: T,
-  options?: RoutesCreatorOptions,
+  options?: RoutesCreatorOptions
 ) => {
   paths: Record<keyof typeof routes, string>;
   Router: () => JSX.Element;
 } = (
   routes,
-  options = {},
+  options = {}
 ): {
-  paths: Record<keyof typeof routes, string>;
   Router: () => JSX.Element;
+  paths: Record<keyof typeof routes, string>;
 } => {
   const paths = {} as Record<keyof typeof routes, string>;
 
-  const items: RouteItem[] = [];
   Object.keys(routes).forEach((k) => {
     (paths as Record<string, string>)[k] = k;
     const { render, ...rest } = routes[k];
@@ -31,7 +30,6 @@ export const creator: <T extends Record<string, Route>>(
       Component: lazy(render),
       ...rest,
     } as RouteItem;
-    items.push(item);
     routeMap[k] = item;
   });
 

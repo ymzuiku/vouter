@@ -59,6 +59,11 @@ react-ob@^2.2.5:
   resolved "https://registry.yarnpkg.com/react-ob/-/react-ob-2.2.5.tgz#5110db507b89d3816323d2ea9b607028a31bbdc5"
   integrity sha512-LaYOYsUiV4gbsrn/aGEjzkpTh02iyINxt/lmCVQfVNBryPCnNttXp69FAnuXqWqUegQRoHl6VyHZAcFLN/WG0g==
 
+react-override-props@^0.0.2:
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/react-override-props/-/react-override-props-0.0.2.tgz#42c86cbe1f98a13c02b089b8e9f518d6629fbe1e"
+  integrity sha512-a7FVPhhhutqDsOSD0SfA5NQ4mPjYVBMAZdKi4UfJzETnPzd8u/3vFGNNUss+RKR4Q1GRRn8tdasS2Gr6A0rpOA==
+
 react@17.0.2:
   version "17.0.2"
   resolved "https://registry.yarnpkg.com/react/-/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"

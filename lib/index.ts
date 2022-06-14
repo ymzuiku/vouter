@@ -10,7 +10,10 @@ export const routeMap = {} as Record<string, RouteItem>;
 
 // 预加载页面
 const preload = (url: string) => {
-  if (typeof window === "undefined" || (window as unknown as { isTest: boolean }).isTest) {
+  if (
+    typeof window === "undefined" ||
+    (window as unknown as { isTest: boolean }).isTest
+  ) {
     return;
   }
   if (routerPreloadCache[url]) {

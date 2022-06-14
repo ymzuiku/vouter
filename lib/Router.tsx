@@ -26,7 +26,7 @@ export type RouterProps = DivProps<{
   NotFoundComponent?: () => JSX.Element;
 }>;
 
-export const routerOb = CreateObserver({
+const routerOb = CreateObserver({
   n: 0,
 });
 
@@ -40,10 +40,17 @@ function Empty() {
     <div style={{ padding: 100, margin: "0px auto", textAlign: "center" }}>
       <div>Not found page</div>
       <button
-        style={{ padding: "8px 16px", outline: "none", background: "#ddd", margin: 20, borderRadius: 10 }}
+        style={{
+          padding: "8px 16px",
+          outline: "none",
+          background: "#ddd",
+          margin: 20,
+          borderRadius: 10,
+        }}
         onClick={() => {
           vouter.clearTo("/");
-        }}>
+        }}
+      >
         Go Home
       </button>
     </div>
@@ -58,7 +65,14 @@ function stop(e: any) {
 
 const preloadCache = {} as Record<string, boolean>;
 
-function Item({ last, path, Component, notKeep, preload, preloadDelay }: RouteItem & { last: boolean }) {
+function Item({
+  last,
+  path,
+  Component,
+  notKeep,
+  preload,
+  preloadDelay,
+}: RouteItem & { last: boolean }) {
   return useMemo(() => {
     const zIndex = historyProxy.stack.indexOf(path) * 100;
     if (notKeep && !last) {
@@ -87,7 +101,8 @@ function Item({ last, path, Component, notKeep, preload, preloadDelay }: RouteIt
             // display: last ? "block" : "none",
           }}
           onTouchStart={last ? undefined : stop}
-          onMouseDown={last ? undefined : stop}>
+          onMouseDown={last ? undefined : stop}
+        >
           <Component path={path} />
         </div>
       </Suspense>
@@ -96,13 +111,15 @@ function Item({ last, path, Component, notKeep, preload, preloadDelay }: RouteIt
 }
 
 export function Router({ NotFoundComponent = Empty }: RouterProps) {
-  historyProxy.stack = [vouter.nowUrl()];
+  if (!historyProxy.stack.length) {
+    historyProxy.stack = [vouter.nowFullUrl()];
+  }
   useObserver(routerOb, (s) => [s.n]);
   const len = historyProxy.stack.length - 1;
   return (
     <>
       {historyProxy.stack.map((path, index) => {
-        const item = routeMap[path];
+        const item = routeMap[path.split("?")[0]];
         if (item) {
           const last = len === index;
           return <Item last={last} key={path + index} {...item} />;
