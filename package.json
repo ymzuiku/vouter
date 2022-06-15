@@ -1,6 +1,6 @@
 {
   "name": "vouter",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "main": "umd/index.js",
   "types": "lib/index.ts",
   "exports": {
@@ -35,7 +35,7 @@
   },
   "homepage": "git+https://github.com/ymzuiku/vouter.git",
   "dependencies": {
-    "react-ob": "^2.2.5",
+    "react-ob": "^2.2.7",
     "react-override-props": "^0.0.2"
   }
 }

@@ -7,13 +7,13 @@ specifiers:
   '@types/fs-extra': ^9.0.13
   '@types/react': ^18.0.10
   react: 17.0.2
-  react-ob: ^2.2.5
+  react-ob: ^2.2.7
   react-override-props: ^0.0.2
   tslib: ^2.3.1
   typescript: ^4.6.3
 
 dependencies:
-  react-ob: 2.2.5
+  react-ob: 2.2.7
   react-override-props: 0.0.2
 
 devDependencies:
@@ -71,8 +71,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /react-ob/2.2.5:
-    resolution: {integrity: sha512-LaYOYsUiV4gbsrn/aGEjzkpTh02iyINxt/lmCVQfVNBryPCnNttXp69FAnuXqWqUegQRoHl6VyHZAcFLN/WG0g==}
+  /react-ob/2.2.7:
+    resolution: {integrity: sha512-UhJTVApHvB4vLCeAc/o1KdL0dWKK2Kw5KubZ3N6Q5M+XKbM7G2b7eksQ555Xo6cgOYV8RSqYMiqRSWRTYYXcdA==}
     dev: false
 
   /react-override-props/0.0.2:
