@@ -66,6 +66,25 @@ function App() {
 }
 
 ```
+### useHistoryChange
+
+When sub page back, you can do something:
+
+```tsx
+
+function App(){
+  const his = useHistoryChange();
+  if (his.isBack) {
+    console.log("I need fetch new data.");
+  }
+  return <div>
+      {his.isBack}
+      {his.last}
+      {his.stack}
+    </div>
+}
+
+```
 
 ### Events listen
 
@@ -74,11 +93,11 @@ If history stack is zero, and need back other url::
 ```tsx
 import { vouter } from "vouter";
 
-vouter.setOnLastBack((url) => {
-  if (url.indexOf("/product") === 0) {
+vouter.setOnLastBack((stack) => {
+  if (stack.url.indexOf("/product") === 0) {
     return "/";
   }
-  return url;
+  return stack.url;
 });
 ```
 
@@ -88,7 +107,7 @@ When use history change:
 import { vouter } from "vouter";
 
 historyProxy.listen((event, stack) => {
-    console.log(event, stack); // "popstate", ["/", "/product"]
+    console.log(event, stack); // "popstate", [{...}, {...}]
 });
 
 ```

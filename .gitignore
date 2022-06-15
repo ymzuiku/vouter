@@ -8,6 +8,7 @@
 # testing
 /coverage
 **/coverage
+pnpm-global
 
 # production
 /build

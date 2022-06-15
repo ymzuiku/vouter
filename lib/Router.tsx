@@ -1,8 +1,14 @@
-import { Suspense, useMemo } from "react";
+import { createContext, Suspense, useContext, useMemo } from "react";
 import { CreateObserver, useObserver } from "react-ob";
 import { DivProps } from "react-override-props";
 import { routeMap, vouter } from ".";
-import { historyProxy } from "./historyProxy";
+import { historyProxy, Stack } from "./historyProxy";
+
+export interface RouteProps {
+  stack: Stack;
+  isBack: boolean;
+  last: boolean;
+}
 
 export interface Route {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -57,28 +63,37 @@ function Empty() {
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function stop(e: any) {
   e.preventDefault();
   e.stopPropagation();
 }
-
 const preloadCache = {} as Record<string, boolean>;
+
+const routeCtx = createContext<RouteProps>({
+  stack: historyProxy.newStack("/"),
+  isBack: false,
+  last: false,
+});
+
+export function useHistoryChange() {
+  return useContext(routeCtx);
+}
 
 function Item({
   last,
   path,
+  stack,
   Component,
   notKeep,
   preload,
   preloadDelay,
-}: RouteItem & { last: boolean }) {
+}: RouteItem & { last: boolean; stack: Stack }) {
   return useMemo(() => {
-    const zIndex = historyProxy.stack.indexOf(path) * 100;
     if (notKeep && !last) {
       return null;
     }
 
+    const zIndex = stack.index * 100;
     if (preload && !preloadCache[path]) {
       preloadCache[path] = true;
       setTimeout(() => {
@@ -87,45 +102,49 @@ function Item({
     }
 
     return (
-      <Suspense key={path} fallback={<div></div>}>
-        <div
-          data-path={path}
-          style={{
-            zIndex,
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            left: 0,
-            top: 0,
-            visibility: last ? "visible" : "hidden",
-            // display: last ? "block" : "none",
-          }}
-          onTouchStart={last ? undefined : stop}
-          onMouseDown={last ? undefined : stop}
-        >
-          <Component path={path} />
-        </div>
-      </Suspense>
+      <routeCtx.Provider
+        value={{ stack, isBack: last && stack.time + 100 < Date.now(), last }}
+      >
+        <Suspense key={path} fallback={<div></div>}>
+          <div
+            data-path={path}
+            style={{
+              zIndex,
+              position: "absolute",
+              width: "100%",
+              height: "100%",
+              left: 0,
+              top: 0,
+            }}
+            onTouchStart={last ? undefined : stop}
+            onMouseDown={last ? undefined : stop}
+          >
+            <Component />
+          </div>
+        </Suspense>
+      </routeCtx.Provider>
     );
-  }, [last, path]);
+  }, [last, stack.url]);
 }
 
 export function Router({ NotFoundComponent = Empty }: RouterProps) {
   if (!historyProxy.stack.length) {
-    historyProxy.stack = [vouter.nowFullUrl()];
+    historyProxy.stack = [vouter.newStack(vouter.nowFullUrl())];
   }
   useObserver(routerOb, (s) => [s.n]);
   const len = historyProxy.stack.length - 1;
   return (
     <>
-      {historyProxy.stack.map((path, index) => {
-        const item = routeMap[path.split("?")[0]];
+      {historyProxy.stack.map((stack, index) => {
+        const item = routeMap[stack.path];
         if (item) {
           const last = len === index;
-          return <Item last={last} key={path + index} {...item} />;
+          return (
+            <Item last={last} key={stack.url + index} stack={stack} {...item} />
+          );
         }
 
-        return <NotFoundComponent key={path + index} />;
+        return <NotFoundComponent key={stack.url + index} />;
       })}
     </>
   );

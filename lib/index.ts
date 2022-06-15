@@ -1,7 +1,9 @@
 import { creator } from "./creator";
-import { historyProxy } from "./historyProxy";
+import { historyProxy, Stack } from "./historyProxy";
 import { isIOSWechat } from "./isIOSWechat";
-import { RouteItem } from "./Router";
+import { RouteItem, RouteProps, useHistoryChange } from "./Router";
+
+export { RouteProps };
 
 historyProxy.useHash = true;
 
@@ -83,23 +85,37 @@ export const vouter = {
       historyProxy.push(fixUrl(url, params));
     }
   },
-  replace: (url: string, params?: Record<string, string>) => {
-    historyProxy.replace(fixUrl(url, params));
+  replace: (url: string, params?: Record<string, string>, data?: any) => {
+    historyProxy.replace(fixUrl(url, params), data);
   },
-  goBack: () => {
+  goBack: (data?: any) => {
     if (isIOSWechat()) {
-      vouter.replace(historyProxy.stack[historyProxy.stack.length - 1]);
+      vouter.replace(
+        historyProxy.stack[historyProxy.stack.length - 1].url,
+        data
+      );
     } else {
-      historyProxy.goBack();
+      historyProxy.goBack(data);
     }
   },
   clearTo: (url: string, params?: Record<string, string>) => {
     historyProxy.clearTo(fixUrl(url, params));
   },
   preload,
+  newStack: historyProxy.newStack,
   isIOSWechat,
   create: creator,
-  setOnLastBack: (fn: (url: string) => string) => {
+  getStack: () => historyProxy.stack,
+  getLastStack: () => historyProxy.stack[historyProxy.stack.length - 1],
+  isBack: () => {
+    const lastStack = vouter.getLastStack();
+    if (lastStack.url === vouter.nowFullUrl()) {
+      return lastStack.time + 100 < Date.now();
+    }
+    return false;
+  },
+  useHistoryChange,
+  setOnLastBack: (fn: (stack: Stack) => string) => {
     historyProxy.onLastBack = fn;
   },
 };
