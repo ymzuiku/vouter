@@ -8,7 +8,7 @@ export interface Stack {
   time: number;
   index: number;
   // tempData 是一种临时数据，当页面返回时可以带会，如果发起push，replace，都会清理历史 tempData
-  tempData?: any;
+  tempData?: Record<string, unknown> | string;
 }
 type Event = (typed: State, stack: Stack[]) => void;
 
@@ -49,7 +49,7 @@ const push = (url: string) => {
   history.pushState(null, "", url);
   window.dispatchEvent(new Event("pushState"));
 };
-const replace = (url: string, data?: any) => {
+const replace = (url: string, data?: Record<string, unknown>) => {
   historyProxy.stack.forEach((s) => {
     s.tempData = undefined;
   });
@@ -68,7 +68,7 @@ const replace = (url: string, data?: any) => {
   window.dispatchEvent(new Event("replaceState"));
 };
 
-const goBack = (data?: any) => {
+const goBack = (data?: Record<string, unknown>) => {
   if (historyProxy.stack.length > 1) {
     historyProxy.stack.pop();
   }

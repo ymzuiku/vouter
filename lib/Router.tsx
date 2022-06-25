@@ -1,32 +1,10 @@
 import { createContext, Suspense, useContext, useMemo } from "react";
 import { CreateObserver, useObserver } from "react-ob";
 import { DivProps } from "react-override-props";
-import { routeMap, vouter } from ".";
 import { historyProxy, Stack } from "./historyProxy";
-
-export interface RouteProps {
-  stack: Stack;
-  isBack: boolean;
-  last: boolean;
-}
-
-export interface Route {
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  render: () => Promise<{ default: any }>;
-  // 当前页面进入后需要预加载的页面
-  preload?: string[];
-  // 延迟多长时间预加载，默认为500ms，把主要的价值时间预留给当前页面
-  preloadDelay?: number;
-  notKeep?: boolean;
-  // 不匹配时，设置dispalyNone
-  // displayNone?: boolean;
-}
-
-export interface RouteItem extends Route {
-  path: string;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  Component: any;
-}
+import { routeMap } from "./routeMap";
+import { RouteItem, RouteProps } from "./types";
+import { vouter } from "./vouter";
 
 export type RouterProps = DivProps<{
   NotFoundComponent?: () => JSX.Element;
@@ -55,14 +33,14 @@ function Empty() {
         }}
         onClick={() => {
           vouter.clearTo("/");
-        }}
-      >
+        }}>
         Go Home
       </button>
     </div>
   );
 }
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function stop(e: any) {
   e.preventDefault();
   e.stopPropagation();
@@ -97,14 +75,12 @@ function Item({
     if (preload && !preloadCache[path]) {
       preloadCache[path] = true;
       setTimeout(() => {
-        preload!.forEach(vouter.preload);
+        preload.forEach(vouter.preload);
       }, preloadDelay || 500);
     }
 
     return (
-      <routeCtx.Provider
-        value={{ stack, isBack: last && stack.time + 100 < Date.now(), last }}
-      >
+      <routeCtx.Provider value={{ stack, isBack: last && stack.time + 100 < Date.now(), last }}>
         <Suspense key={path} fallback={<div></div>}>
           <div
             data-path={path}
@@ -117,8 +93,7 @@ function Item({
               top: 0,
             }}
             onTouchStart={last ? undefined : stop}
-            onMouseDown={last ? undefined : stop}
-          >
+            onMouseDown={last ? undefined : stop}>
             <Component />
           </div>
         </Suspense>
@@ -139,9 +114,7 @@ export function Router({ NotFoundComponent = Empty }: RouterProps) {
         const item = routeMap[stack.path];
         if (item) {
           const last = len === index;
-          return (
-            <Item last={last} key={stack.url + index} stack={stack} {...item} />
-          );
+          return <Item last={last} key={stack.url + index} stack={stack} {...item} />;
         }
 
         return <NotFoundComponent key={stack.url + index} />;

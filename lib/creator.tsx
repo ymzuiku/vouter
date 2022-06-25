@@ -1,6 +1,7 @@
 import { lazy } from "react";
-import { routeMap } from ".";
-import { Route, RouteItem, Router } from "./Router";
+import { routeMap } from "./routeMap";
+import { Router } from "./Router";
+import { Route, RouteItem } from "./types";
 
 export interface RoutesCreatorOptions {
   NotFoundComponent?: () => JSX.Element;
@@ -8,13 +9,13 @@ export interface RoutesCreatorOptions {
 
 export const creator: <T extends Record<string, Route>>(
   routes: T,
-  options?: RoutesCreatorOptions
+  options?: RoutesCreatorOptions,
 ) => {
   paths: Record<keyof typeof routes, string>;
   Router: () => JSX.Element;
 } = (
   routes,
-  options = {}
+  options = {},
 ): {
   Router: () => JSX.Element;
   paths: Record<keyof typeof routes, string>;
